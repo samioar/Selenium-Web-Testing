@@ -1,35 +1,39 @@
-﻿
-
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
+using SL_TestAutomationFramework.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace SL_TestAutomationFramework.lib.pages
 {
     public class SL_HomePage
     {
-        private IWebDriver _seleniumDriver;
-        //Get web elements
-        //private IWebElement _passwordField => _seleniumDriver.FindElement(By.Id("password"));
-        private IWebElement _passwordField
-        {
-            get { return _seleniumDriver.FindElement(By.Id("password")); }
-        }
-        private IWebElement _usernameField => _seleniumDriver.FindElement(By.Id("user-name"));
-        private IWebElement _loginButton => _seleniumDriver.FindElement(By.Id("login-button"));
-        private IWebElement _errorMessage => _seleniumDriver.FindElement(By.CssSelector("[data-test=\"error\"]"));
-
+        private IWebDriver SeleniumDriver { get; }
         private string _homePageUrl = AppConfigReader.BaseUrl;
-
-
+        private IWebElement _passwordField => SeleniumDriver.FindElement(By.Id("password"));
+        private IWebElement _usernameField => SeleniumDriver.FindElement(By.Id("user-name"));
+        private IWebElement _loginButton => SeleniumDriver.FindElement(By.Id("login-button"));
+        private IWebElement _errorMessage => SeleniumDriver.FindElement(By.CssSelector("[data-test=\"error\"]"));
+        //private IWebElement _errorMessage
+        //{
+        //    get { return SeleniumDriver.FindElement(By.CssSelector("[data-test=\"error\"]")); }
+        //}
         public SL_HomePage(IWebDriver seleniumDriver)
         {
-            _seleniumDriver = seleniumDriver;
+            SeleniumDriver = seleniumDriver;
         }
-
-        public void VisitHomePage() => _seleniumDriver.Navigate().GoToUrl(_homePageUrl);
+        public void EnterSigninCredentials(Credentials cred)
+        {
+            EnterUserName(cred.Username);
+            EnterPassword(cred.Password);
+        }
+        public void VisitHomePage() => SeleniumDriver.Navigate().GoToUrl(_homePageUrl);
         public void EnterUserName(string username) => _usernameField.SendKeys(username);
         public void EnterPassword(string password) => _passwordField.SendKeys(password);
-        public void EnterWrongPassword(string wrongpassword) => _passwordField.SendKeys(wrongpassword);
         public void ClickLoginButton() => _loginButton.Click();
         public string CheckErrorMessage() => _errorMessage.Text;
+    
     }
 }
